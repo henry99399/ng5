@@ -1,0 +1,130 @@
+<nz-layout class="main-page-layout">
+  <nz-header class="main-page-header">
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>
+        <a href="#/home">首页</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        机构管理
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </nz-header>
+  <nz-content class="main-page-content">
+    <div class="tableListSearch">
+      <nz-table #nzTable [nzAjaxData]="tableData" [nzLoading]="_loading" [nzIsPagination]="false">
+        <thead nz-thead>
+          <tr>
+            <th nz-th>
+              <span>支付方式</span>
+            </th>
+            <th nz-th>
+              <span>启用/停用</span>
+            </th>
+            <th nz-th>
+              <span>操作</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody nz-tbody>
+          <tr nz-tbody-tr *ngFor="let data of nzTable.data">
+            <td nz-td>{{data.pay_type_name}}</td>
+            <td nz-td>
+              <nz-switch [ngModel]="data.enabled == 1" [nzSize]="'middle'" (click)="enabled(data)"></nz-switch>
+            </td>
+            <td nz-td>
+              <span>
+                <a href="javascript:void(0)" (click)="showModalMiddle(data)">配置</a>
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </div>
+  </nz-content>
+</nz-layout>
+
+
+<nz-modal [nzMaskClosable]="false" [nzWidth]="500" [nzWrapClassName]="'vertical-center-modal'" [nzContent]="modalContent"
+  [nzVisible]="isVisibleMiddle" [nzTitle]="formTitle" (nzOnCancel)="handleCancelMiddle($event)" (nzOnOk)="handleOkMiddle($event)">
+  <ng-template #modalContent>
+
+    <form nz-form [formGroup]="myForm" (ngSubmit)="_submitForm()">
+
+      <div nz-form-item nz-row>
+        <div nz-col [nzSpan]="12">
+          <div nz-form-label>
+            <label nz-form-item-required>域名</label>
+          </div>
+          <div nz-form-control nzHasFeedback>
+            <nz-input formControlName="base_url" [(ngModel)]="formBean.base_url"></nz-input>
+          </div>
+        </div>
+      </div>
+      <div nz-form-item nz-row *ngIf="formBean.pay_type_id==1">
+        <div nz-col [nzSpan]="12">
+          <div nz-form-label>
+            <label nz-form-item-required>rsa秘钥</label>
+          </div>
+          <div nz-form-control nzHasFeedback>
+            <nz-input formControlName="rsa_private_key" [(ngModel)]="formBean.rsa_private_key"></nz-input>
+          </div>
+        </div>
+        <div nz-col [nzSpan]="12">
+          <div nz-form-label>
+            <label nz-form-item-required>似钥</label>
+          </div>
+          <div nz-form-control nzHasFeedback>
+            <nz-input formControlName="app_private_key" [(ngModel)]="formBean.app_private_key"></nz-input>
+          </div>
+        </div>
+      </div>
+      <div nz-form-item nz-row *ngIf="formBean.pay_type_id==1">
+        <div nz-col [nzSpan]="12">
+          <div nz-form-label>
+            <label nz-form-item-required>公钥</label>
+          </div>
+          <div nz-form-control nzHasFeedback>
+            <nz-input formControlName="alipay_public_key" [(ngModel)]="formBean.alipay_public_key"></nz-input>
+          </div>
+        </div>
+        <div nz-col [nzSpan]="12">
+          <div nz-form-label>
+            <label nz-form-item-required>支付成功后跳转地址</label>
+          </div>
+          <div nz-form-control nzHasFeedback>
+            <nz-input formControlName="show_url" [(ngModel)]="formBean.show_url"></nz-input>
+          </div>
+        </div>
+      </div>
+      <div nz-form-item nz-row *ngIf="formBean.pay_type_id==1">
+        <div nz-form-label>
+          <label nz-form-item-required>支付说明</label>
+        </div>
+        <div nz-form-control nzHasFeedback>
+          <nz-input formControlName="pay_mark" [nzType]="'textarea'" [(ngModel)]="formBean.pay_mark"></nz-input>
+        </div>
+      </div>
+      <div nz-form-item nz-row *ngIf="formBean.pay_type_id==2">
+        <div nz-col [nzSpan]="12">
+          <div nz-form-label>
+            <label nz-form-item-required>商户id</label>
+          </div>
+          <div nz-form-control nzHasFeedback>
+            <nz-input formControlName="mch_id" [(ngModel)]="formBean.mch_id"></nz-input>
+          </div>
+        </div>
+        <div nz-col [nzSpan]="12">
+          <div nz-form-label>
+            <label nz-form-item-required>key</label>
+          </div>
+          <div nz-form-control nzHasFeedback>
+            <nz-input formControlName="app_key" [(ngModel)]="formBean.app_key"></nz-input>
+          </div>
+        </div>
+      </div>
+
+      <button style="display:none;">save</button>
+    </form>
+
+  </ng-template>
+</nz-modal>
